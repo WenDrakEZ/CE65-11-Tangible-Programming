@@ -10,11 +10,17 @@ const int ENCB = 13;
 const int ENCC = 12;
 const int ENCD = 14;
 
+//Button
+int Button = 10;
+
 int pos = 0;
 long posi = 0;
 
 int dos = 0;
 long dosi = 0;
+
+//PWM
+int pval = 255;
 
 TaskHandle_t Move = NULL;
 
@@ -45,11 +51,17 @@ void loop() {
   Serial.println(pos);
   Serial.print("ENB :");
   Serial.println(dos);
+
+  delay(50);
 }
 
 void movement(void * parameter){
+  pinMode(Button,INPUT);
+  
+  for (;;){
+    if (digitalRead(Button) == HIGH) {
       Forward();
-
+      
       delay(1000);
 
       Reverse();
@@ -65,48 +77,49 @@ void movement(void * parameter){
       delay(1000);
       
       Stop();
-    }
+     }     
   }
+  vTaskDelete(NULL); 
 }
 
   void Forward(){
-    digitalWrite(IN1,HIGH);
-    digitalWrite(IN2,LOW);
+    analogWrite(IN1,pval);
+    analogWrite(IN2,LOW);
     
-    digitalWrite(IN3,HIGH);
-    digitalWrite(IN4,LOW);
+    analogWrite(IN3,pval);
+    analogWrite(IN4,LOW);
   }
 
   void Reverse(){
-    digitalWrite(IN1,LOW);
-    digitalWrite(IN2,HIGH);
+    analogWrite(IN1,LOW);
+    analogWrite(IN2,pval);
     
-    digitalWrite(IN3,LOW);
-    digitalWrite(IN4,HIGH);
+    analogWrite(IN3,LOW);
+    analogWrite(IN4,pval);
   }
 
   void Left(){
-    digitalWrite(IN1,HIGH);
-    digitalWrite(IN2,LOW);
+    analogWrite(IN1,pval);
+    analogWrite(IN2,LOW);
     
-    digitalWrite(IN3,LOW);
-    digitalWrite(IN4,HIGH);
+    analogWrite(IN3,LOW);
+    analogWrite(IN4,pval);
   }
 
   void Right(){
-    digitalWrite(IN1,LOW);
-    digitalWrite(IN2,HIGH);
-    
-    digitalWrite(IN3,HIGH);
-    digitalWrite(IN4,LOW);
+    analogWrite(IN1,LOW);
+    analogWrite(IN2,pval);
+
+    analogWrite(IN3,pval);
+    analogWrite(IN4,LOW);
   }
 
   void Stop(){
-    digitalWrite(IN1,LOW);
-    digitalWrite(IN2,LOW);
+    analogWrite(IN1,LOW);
+    analogWrite(IN2,LOW);
     
-    digitalWrite(IN3,LOW);
-    digitalWrite(IN4,LOW);
+    analogWrite(IN3,LOW);
+    analogWrite(IN4,LOW);
   }
 
  void readEncoderA(){            //Pause A
